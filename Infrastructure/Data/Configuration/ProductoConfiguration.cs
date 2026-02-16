@@ -22,15 +22,14 @@ namespace Infrastructure.Data.Configuration
                .HasColumnType("decimal(18,2)");
 
             builder.HasOne(p => p.Marca)
-                .WithMany()
+                .WithMany(p => p.Productos)
                 .HasForeignKey(p => p.MarcaId);
 
             builder.HasOne(p => p.Categoria)
-                .WithMany()
+                .WithMany(p => p.Productos)
                 .HasForeignKey(p => p.CategoriaId);
-
-
-
+                
+            
 
         }
     }

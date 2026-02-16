@@ -1,4 +1,5 @@
 using Infrastructure;
+using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,7 +12,10 @@ builder.Services.AddDbContext<TiendaContext>(options =>
 {
     options.UseNpgsql
     (builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.EnableDetailedErrors();
+    options.EnableSensitiveDataLogging();
 });
+
 
 
 var app = builder.Build();
@@ -20,6 +24,24 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+}
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var loggerFactory= services.GetRequiredService<ILoggerFactory>();
+
+    try
+    {
+        var context = services.GetRequiredService<TiendaContext>();
+        await context.Database.MigrateAsync();
+        await TiendaContextSeed.SeedAsync(context, loggerFactory);
+
+    }
+    catch (Exception ex)
+    {
+        var logger = loggerFactory.CreateLogger<Program>();
+        logger.LogError(ex, "Ocurrio un error durante la migracion");
+    }
 }
 
 app.UseHttpsRedirection();
