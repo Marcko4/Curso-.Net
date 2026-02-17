@@ -4,10 +4,9 @@ using System.Text;
 
 namespace Core.Entities
 {
-    public class Categoria
+    public class Categoria:BaseEntity
     {
-        public int Id { get; set; }
-        public string ? Nombre { get; set; }
+        public string Nombre { get; set; }
         public ICollection<Producto> Productos { get; set; }
 
     }

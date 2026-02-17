@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
-
+builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<TiendaContext>(options =>
 {
     options.UseNpgsql
@@ -24,6 +24,8 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.UseSwaggerUI();
+    app.UseSwagger();
 }
 using (var scope = app.Services.CreateScope())
 {
