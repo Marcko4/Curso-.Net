@@ -1,3 +1,4 @@
+using API.Extensions;
 using Infrastructure;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -6,8 +7,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+builder.Services.ConfigureCors(); // aladimos el servicio para usar cors
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+builder.Services.AddControllers();
 builder.Services.AddDbContext<TiendaContext>(options =>
 {
     options.UseNpgsql
@@ -26,6 +30,8 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
     app.UseSwaggerUI();
     app.UseSwagger();
+    app.UseCors("CorsPolicy"); // añadimos cors 
+    app.MapControllers();
 }
 using (var scope = app.Services.CreateScope())
 {
