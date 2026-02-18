@@ -1,4 +1,5 @@
 ﻿using Core.Entities;
+using Core.Interfaces;
 using Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,27 +12,29 @@ namespace API.Controllers
     [ApiController]
     public class ProductosController : BaseApiController
     {
-        private readonly TiendaContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductosController(TiendaContext context)
+        public ProductosController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+         _unitOfWork = unitOfWork;
         }
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Producto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<Producto>>> Get()
         {
-            var productos = await _context.Productos.ToListAsync();
+            var productos = await _unitOfWork.Productos.GetAllAsync();
             return Ok(productos);
+                                
+            
         }
 
 
         [HttpGet("{Id}")]
         public async Task<IActionResult> Get(int Id) // obtener un producto por su identificador 
         {
-            var producto = await _context.Productos.FindAsync(Id); // este metodo permite buscar por id
-            return Ok(producto);
+            var producto = await _unitOfWork.Productos.GetByIdAsync(Id); // este metodo permite buscar por id
+            return Ok(producto); 
         }   
 
     }

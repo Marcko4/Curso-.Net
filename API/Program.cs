@@ -8,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
+builder.Services.AddAplicacionServices(); // ya se puede los repositorios en  cualquier componente 
 builder.Services.ConfigureCors(); // aladimos el servicio para usar cors
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
@@ -19,8 +20,6 @@ builder.Services.AddDbContext<TiendaContext>(options =>
     options.EnableDetailedErrors();
     options.EnableSensitiveDataLogging();
 });
-
-
 
 var app = builder.Build();
 

@@ -1,4 +1,8 @@
-﻿namespace API.Extensions
+﻿using Core.Interfaces;
+using Infrastructure.Repositories;
+using Infrastructure.UnitOfWork;
+
+namespace API.Extensions
 {
     public static class ApplicationServiceExtension
     {
@@ -11,8 +15,16 @@
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
-
-
             });
+
+        public static void AddAplicacionServices(this IServiceCollection services) // se añade nuevo metodo de extension
+        {
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            //services.AddScoped<IProductoRepository, ProductoRepository>();
+            //services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+            //services.AddScoped<IMarcaRepository, MarcaRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+        }
+
     }
 }
