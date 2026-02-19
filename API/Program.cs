@@ -2,18 +2,20 @@ using API.Extensions;
 using Infrastructure;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 
+builder.Services.AddAutoMapper(Assembly.GetEntryAssembly()); // servicio de automapper
 builder.Services.AddAplicacionServices(); // ya se puede los repositorios en  cualquier componente 
 builder.Services.ConfigureCors(); // aladimos el servicio para usar cors
 builder.Services.AddOpenApi();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(); // servicio de swagger
 builder.Services.AddControllers();
-builder.Services.AddDbContext<TiendaContext>(options =>
+builder.Services.AddDbContext<TiendaContext>(options => // servicio de addcontext + configuracion de la conexion de la bd
 {
     options.UseNpgsql
     (builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -31,6 +33,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseCors("CorsPolicy"); // añadimos cors 
     app.MapControllers();
+    
 }
 using (var scope = app.Services.CreateScope())
 {

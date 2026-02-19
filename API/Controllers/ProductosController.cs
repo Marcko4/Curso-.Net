@@ -1,6 +1,9 @@
-﻿using Core.Entities;
+﻿using API.Dtos;
+using AutoMapper;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure;
+using Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +16,12 @@ namespace API.Controllers
     public class ProductosController : BaseApiController
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
 
-        public ProductosController(IUnitOfWork unitOfWork)
+        public ProductosController(IUnitOfWork unitOfWork, IMapper mapper)
         {
          _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
 
@@ -31,11 +36,54 @@ namespace API.Controllers
 
 
         [HttpGet("{Id}")]
-        public async Task<IActionResult> Get(int Id) // obtener un producto por su identificador 
+        public async Task<ActionResult<ProductoDto>> Get(int Id) // obtener un producto por su identificador 
         {
             var producto = await _unitOfWork.Productos.GetByIdAsync(Id); // este metodo permite buscar por id
-            return Ok(producto); 
-        }   
+            if (producto == null)
+                return NotFound();
+
+            return _mapper.Map<ProductoDto>(producto); // retorna mediante automapper, el mapeo de mi clase productodto
+                                                       // y el producto que obtuve en la base de datos
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Producto>> Post (Producto producto)
+        {
+            _unitOfWork.Productos.Add(producto);
+
+            _unitOfWork.Save(); 
+            if (producto != null)
+            {
+                return BadRequest();
+            }
+
+            return CreatedAtAction(nameof(Post), new {id=producto.Id}, producto);
+        }
+
+        [HttpPut("{Id}")]
+
+        public async Task <ActionResult<Producto>> Put (int Id,[FromBody] Producto producto)
+        {
+            if (producto == null) // si el producto es nulo devuelve un 404
+                return NotFound();
+
+            _unitOfWork.Productos.Update(producto); // le paso el contexto unitofwork, busca el producto en la tabla producto y lo actualiza
+            _unitOfWork.Save(); // guarda el cambio 
+            return producto; // retorna el producto 
+        }
+        [HttpDelete ("{Id}")]
+
+        public async Task<IActionResult> Delete (int Id)
+        {
+            var producto = await _unitOfWork.Productos.GetByIdAsync(Id); //declaro la variable producto, le paso el contexto de la unidad de trabajo
+            //que busque en Productos (IRepositoryProductos
+            if (producto ==null)                                            
+                return NotFound();
+
+            _unitOfWork.Productos.Remove(producto);
+            _unitOfWork.Save();
+            return NoContent();
+        }
 
     }
 }
