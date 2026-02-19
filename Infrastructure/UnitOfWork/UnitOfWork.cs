@@ -67,9 +67,9 @@ namespace Infrastructure.UnitOfWork
             _context.Dispose();
         }
 
-        public int Save()
+        public async Task<int> SaveAsync()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Core.Interfaces
         IMarcaRepository Marcas { get; }
         ICategoriaRepository Categorias { get; }
         // metodo save para guardar
-        int Save();
+        Task <int> SaveAsync();
 
     }
 }

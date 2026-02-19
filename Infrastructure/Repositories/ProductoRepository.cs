@@ -32,6 +32,14 @@ namespace Infrastructure.Repositories
         
 
         }
+        public virtual async Task<IEnumerable<Producto>> GetAllAsync()
+        {
+            return await _context.Productos
+                .Include(u => u.Marca)
+                .Include(u => u.Categoria)
+                .ToListAsync();
+        }
+
 
     }
 

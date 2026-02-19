@@ -26,12 +26,11 @@ namespace API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Producto>>> Get()
+        public async Task<ActionResult<IEnumerable<ProductoListDto>>> Get()
         {
             var productos = await _unitOfWork.Productos.GetAllAsync();
-            return Ok(productos);
-                                
-            
+            return _mapper.Map<List<ProductoListDto>>(productos); //con automapper vas a traer un listado de productos
+                                                                  //desde productolistdto          
         }
 
 
@@ -47,43 +46,49 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Producto>> Post (Producto producto)
+        public async Task<ActionResult<ProductoAppUpdateDto>> Post (ProductoAppUpdateDto productoDto)
         {
+            var producto = _mapper.Map<Producto>(productoDto); // mapeo de entidad producto a productodto
             _unitOfWork.Productos.Add(producto);
 
-            _unitOfWork.Save(); 
+            await _unitOfWork.SaveAsync(); 
             if (producto != null)
             {
                 return BadRequest();
             }
+            productoDto.Id = producto.Id; // al nuevo producto le asigno el nuevo Id
 
-            return CreatedAtAction(nameof(Post), new {id=producto.Id}, producto);
+            return CreatedAtAction(nameof(Post), new {id=productoDto.Id}, productoDto);
         }
 
-        [HttpPut("{Id}")]
+        //[HttpPut("{Id}")]
 
-        public async Task <ActionResult<Producto>> Put (int Id,[FromBody] Producto producto)
-        {
-            if (producto == null) // si el producto es nulo devuelve un 404
-                return NotFound();
+        //public async Task <ActionResult<Producto>> Put (int Id,[FromBody] Producto producto)
+        //{
+        //    if (producto == null) // si el producto es nulo devuelve un 404
+        //        return NotFound();
 
-            _unitOfWork.Productos.Update(producto); // le paso el contexto unitofwork, busca el producto en la tabla producto y lo actualiza
-            _unitOfWork.Save(); // guarda el cambio 
-            return producto; // retorna el producto 
-        }
-        [HttpDelete ("{Id}")]
+        //    _unitOfWork.Productos.Update(producto); // le paso el contexto unitofwork, busca el producto en la tabla producto y lo actualiza
+        //    _unitOfWork.Save(); // guarda el cambio 
+        //    return producto; // retorna el producto 
+        //}
 
-        public async Task<IActionResult> Delete (int Id)
-        {
-            var producto = await _unitOfWork.Productos.GetByIdAsync(Id); //declaro la variable producto, le paso el contexto de la unidad de trabajo
-            //que busque en Productos (IRepositoryProductos
-            if (producto ==null)                                            
-                return NotFound();
 
-            _unitOfWork.Productos.Remove(producto);
-            _unitOfWork.Save();
-            return NoContent();
-        }
+
+
+        //[HttpDelete ("{Id}")]
+
+        //public async Task<IActionResult> Delete (int Id)
+        //{
+        //    var producto = await _unitOfWork.Productos.GetByIdAsync(Id); //declaro la variable producto, le paso el contexto de la unidad de trabajo
+        //    //que busque en Productos (IRepositoryProductos
+        //    if (producto ==null)                                            
+        //        return NotFound();
+
+        //    _unitOfWork.Productos.Remove(producto);
+        //    _unitOfWork.Save();
+        //    return NoContent();
+        //}
 
     }
 }
