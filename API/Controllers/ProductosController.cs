@@ -52,7 +52,7 @@ namespace API.Controllers
             _unitOfWork.Productos.Add(producto);
 
             await _unitOfWork.SaveAsync(); 
-            if (producto != null)
+            if (producto == null)
             {
                 return BadRequest();
             }

@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
         
 
         }
-        public virtual async Task<IEnumerable<Producto>> GetAllAsync()
+        public override async Task<IEnumerable<Producto>> GetAllAsync()
         {
             return await _context.Productos
                 .Include(u => u.Marca)

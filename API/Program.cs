@@ -33,7 +33,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseCors("CorsPolicy"); // añadimos cors 
     app.MapControllers();
-    
+    AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+
 }
 using (var scope = app.Services.CreateScope())
 {
@@ -77,7 +79,7 @@ app.MapGet("/weatherforecast", () =>
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+record WeatherForecast(DateOnly Date, int TemperatureC, string Summary)
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
