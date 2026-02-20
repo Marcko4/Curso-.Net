@@ -11,9 +11,9 @@ namespace API.Extensions
             services.AddCors(options =>
             {
                 options.AddPolicy("CorsPolicy", builder =>
-                builder.AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+                builder.AllowAnyOrigin() // habilita todos los origenes 
+                .AllowAnyMethod() // habilita todos los metodos 
+                .AllowAnyHeader()); // habilita todos los encabezados
 
             });
 

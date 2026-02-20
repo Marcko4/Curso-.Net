@@ -19,6 +19,7 @@ namespace Infrastructure.Repositories
         public GenericRepository(TiendaContext context)
         {
             _context = context;
+
         }
 
         public virtual async Task<T> GetByIdAsync(int id)
@@ -30,6 +31,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Set<T>().ToListAsync();
         }
+
 
         public IEnumerable<T> Find(Expression<Func<T, bool>> expression)
         {
@@ -62,4 +64,6 @@ namespace Infrastructure.Repositories
         }
     }
 
+
+    
 }
