@@ -61,34 +61,32 @@ namespace API.Controllers
             return CreatedAtAction(nameof(Post), new {id=productoDto.Id}, productoDto);
         }
 
-        //[HttpPut("{Id}")]
+        [HttpPut("{Id}")]
 
-        //public async Task <ActionResult<Producto>> Put (int Id,[FromBody] Producto producto)
-        //{
-        //    if (producto == null) // si el producto es nulo devuelve un 404
-        //        return NotFound();
+        public async Task<ActionResult<ProductoAppUpdateDto>> Put(int Id, [FromBody] ProductoAppUpdateDto productoDto)
+        {
+            if (productoDto == null) // si el producto es nulo devuelve un 404
+                return NotFound();
+            var producto = _mapper.Map<Producto>(productoDto);
+            _unitOfWork.Productos.Update(producto);
+            await _unitOfWork.SaveAsync();
+            return productoDto;
 
-        //    _unitOfWork.Productos.Update(producto); // le paso el contexto unitofwork, busca el producto en la tabla producto y lo actualiza
-        //    _unitOfWork.Save(); // guarda el cambio 
-        //    return producto; // retorna el producto 
-        //}
+        }
 
+        [HttpDelete("{Id}")]
 
+        public async Task<IActionResult> Delete(int Id)
+        {
+            var producto = await _unitOfWork.Productos.GetByIdAsync(Id); //declaro la variable producto, le paso el contexto de la unidad de trabajo
+            //que busque en Productos (IRepositoryProductos
+            if (producto == null)
+                return NotFound();
 
-
-        //[HttpDelete ("{Id}")]
-
-        //public async Task<IActionResult> Delete (int Id)
-        //{
-        //    var producto = await _unitOfWork.Productos.GetByIdAsync(Id); //declaro la variable producto, le paso el contexto de la unidad de trabajo
-        //    //que busque en Productos (IRepositoryProductos
-        //    if (producto ==null)                                            
-        //        return NotFound();
-
-        //    _unitOfWork.Productos.Remove(producto);
-        //    _unitOfWork.Save();
-        //    return NoContent();
-        //}
+            _unitOfWork.Productos.Remove(producto);
+           await _unitOfWork.SaveAsync();
+            return NoContent();
+        }
 
     }
 }
