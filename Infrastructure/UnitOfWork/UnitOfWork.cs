@@ -1,75 +1,71 @@
 ﻿
 using Core.Interfaces;
-using Core.Entities;
-using Infrastructure.Data;
 using Infrastructure.Repositories;
-using System.Threading.Tasks;
 
-namespace Infrastructure.UnitOfWork
+namespace Infrastructure.UnitOfWork;
+
+public class UnitOfWork : IUnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork
+    private readonly TiendaContext _context;
+
+    private IProductoRepository _productos;
+    private ICategoriaRepository _categorias;
+    private IMarcaRepository _marcas;
+
+    public UnitOfWork(TiendaContext context)
     {
-        private readonly TiendaContext _context;
+        _context = context;
 
-        private IProductoRepository _productos;
-        private ICategoriaRepository _categorias;
-        private IMarcaRepository _marcas;
+    }
 
-        public UnitOfWork(TiendaContext context)
+    public ICategoriaRepository Categorias
+    {
+        get
         {
-            _context = context;
-
-        }
-
-        public ICategoriaRepository Categorias
-        {
-            get
+            if (_categorias == null)
             {
-                if (_categorias == null)
-                {
-                    _categorias = new CategoriaRepository(_context);
-
-                }
-                return _categorias;
+                _categorias = new CategoriaRepository(_context);
 
             }
+            return _categorias;
+
         }
+    }
 
-        public IMarcaRepository Marcas
+    public IMarcaRepository Marcas
+    {
+        get
         {
-            get
+            if (_marcas == null)
             {
-                if (_marcas == null)
-                {
-                    _marcas = new MarcaRepository(_context);
-
-                }
-                return _marcas;
+                _marcas = new MarcaRepository(_context);
 
             }
-        }
-        public IProductoRepository Productos
-        {
-            get
-            {
-                if (_productos == null)
-                {
-                    _productos = new ProductoRepository(_context);
+            return _marcas;
 
-                }
-                return _productos;
+        }
+    }
+    public IProductoRepository Productos
+    {
+        get
+        {
+            if (_productos == null)
+            {
+                _productos = new ProductoRepository(_context);
 
             }
-        }
+            return _productos;
 
-        public void Dispose()
-        {
-            _context.Dispose();
         }
+    }
 
-        public async Task<int> SaveAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
+    public void Dispose()
+    {
+        _context.Dispose();
+    }
+
+    public async Task<int> SaveAsync()
+    {
+        return await _context.SaveChangesAsync();
     }
 }

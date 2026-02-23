@@ -1,12 +1,8 @@
 ﻿using Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Core.Interfaces
+namespace Core.Interfaces;
+
+public interface ICategoriaRepository : IGenericRepository <Categoria>
 {
-    public interface ICategoriaRepository : IGenericRepository <Categoria>
-    {
 
-    }
 }

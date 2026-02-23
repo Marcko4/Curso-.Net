@@ -1,31 +1,27 @@
 ﻿using Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
-namespace Infrastructure
+namespace Infrastructure;
+
+public class TiendaContext : DbContext
 {
-    public class TiendaContext : DbContext
+    public TiendaContext(DbContextOptions options) : base(options)
     {
-        public TiendaContext(DbContextOptions options) : base(options)
-        {
-        }
+    }
 
-        public DbSet<Producto> Productos { get; set; }
-        public DbSet<Marca> Marcas { get; set; }
-        public DbSet<Categoria> Categorias { get; set; }
+    public DbSet<Producto> Productos { get; set; }
+    public DbSet<Marca> Marcas { get; set; }
+    public DbSet<Categoria> Categorias { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-            modelBuilder.Entity<Producto>()
-             .Property(p => p.FechaCreacion)
-             .HasColumnType("timestamp without time zone");
+        modelBuilder.Entity<Producto>()
+         .Property(p => p.FechaCreacion)
+         .HasColumnType("timestamp without time zone");
 
-        }
     }
 }

@@ -1,12 +1,8 @@
 ﻿using Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Core.Interfaces
+namespace Core.Interfaces;
+
+public interface IProductoRepository : IGenericRepository<Producto>
 {
-    public interface IProductoRepository : IGenericRepository<Producto>
-    {
-       Task <IEnumerable<Producto>> GetProductosMasCaros(int cantidad);
-    }
+   Task <IEnumerable<Producto>> GetProductosMasCaros(int cantidad);
 }

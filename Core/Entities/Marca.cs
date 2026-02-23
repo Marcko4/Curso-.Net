@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace Core.Entities;
 
-namespace Core.Entities
+public class Marca:BaseEntity
 {
-    public class Marca:BaseEntity
-    {
-        
-        public string Nombre { get; set; }
-        public ICollection<Producto> Productos { get; set; }
-    }
+    
+    public string Nombre { get; set; }
+    public ICollection<Producto> Productos { get; set; }
 }
