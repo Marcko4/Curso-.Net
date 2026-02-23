@@ -45,6 +45,7 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<TiendaContext>();
         await context.Database.MigrateAsync();
         await TiendaContextSeed.SeedAsync(context, loggerFactory);
+        await TiendaContextSeed.SeedRolesAsync(context, loggerFactory);
     }
     catch (Exception ex)
     {
@@ -56,5 +57,13 @@ using (var scope = app.Services.CreateScope())
 app.UseHttpsRedirection();
 app.UseCors("CorsPolicy");
 app.MapControllers();
+
+app.UseAuthentication(); // identifica al usuario basado en las credenciales proporcionada, cookie, jwt, etc
+// esto crea un objeto claims principal  y lo asigna a httpcontextuser
+
 app.UseAuthorization();
+// verifica si el usuario tiene autorizado acceder al recurso, va a evaluar las politicas, roles, etc, si bloquea las peticiones
+// si el usuario no esta autorizado.
+
 app.Run();
+    
